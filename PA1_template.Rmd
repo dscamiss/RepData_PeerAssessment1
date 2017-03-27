@@ -1,25 +1,74 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
+title: 'Reproducible Research: Peer Assessment 1'
+output:
+  pdf_document: default
   html_document:
-    keep_md: true
+    keep_md: yes
 ---
-
 
 ## Loading and preprocessing the data
 
-
+```{r setup}
+library(plyr)
+base_dir <- "C:/Users/Scott/Documents/coursera/data_science_specialization/"
+course_dir <- paste0(base_dir, "reproducible_research/week_2/project_1")
+setwd(course_dir)
+activityRaw <- read.csv("activity.csv")
+activity <- na.omit(activityRaw)
+activity$date <- as.Date(activity$date)
+```
 
 ## What is mean total number of steps taken per day?
 
+```{r average steps}
+totalSteps <- ddply(activity, "date", summarize, steps = sum(steps, na.rm = TRUE))
+hist(totalSteps$steps, xlab = "total steps", ylab = "counts", main = "total steps taken per day")
+meanTotalSteps <- mean(totalSteps$steps)
+medianTotalSteps <- median(totalSteps$steps)
+```
 
+Mean = $`r meanTotalSteps`$, median = $`r medianTotalSteps`$.
 
 ## What is the average daily activity pattern?
 
+```{r average pattern}
+averagePattern <- ddply(activity, "interval", summarize, steps = mean(steps, na.rm = TRUE))
+plot(averagePattern$steps, type = "l", xlab = "interval", ylab = "average steps", main = "average steps taken per interval")
+```
 
+Max interval (on average across all days) = `r which.max(averagePattern$steps)`.
 
 ## Imputing missing values
 
+```{r imputing}
+totalNA <- sum(is.na(activityRaw$steps))
 
+activity <- activityRaw
+activity$date <- as.Date(activity$date)
+for (i in 1:nrow(activity)) {
+  if (is.na(activity[i, 1])) {
+    j <- which(averagePattern$interval == activity[i, 3])
+    activity[i, 1] <- averagePattern[j, 2]
+  }
+}
+
+totalSteps <- ddply(activity, "date", summarize, steps = sum(steps, na.rm = TRUE))
+hist(totalSteps$steps, xlab = "total steps", ylab = "counts", main = "total steps taken per day")
+meanTotalSteps <- mean(totalSteps$steps)
+medianTotalSteps <- median(totalSteps$steps)
+```
+
+NA rows = `r totalNA`.  
+
+Mean = $`r meanTotalSteps`$, median = $`r medianTotalSteps`$.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r average pattern differences}
+activity$isWeekend <- factor(weekdays(activity$date) %in% c("Saturday", "Sunday"), levels = c(FALSE, TRUE))
+averagePattern <- ddply(activity, c("interval", "isWeekend"), summarize, steps = mean(steps, na.rm = TRUE))
+temp = subset(averagePattern, isWeekend == TRUE)
+plot(temp$steps, type = "l", xlab = "interval", ylab = "average steps")
+temp = subset(averagePattern, isWeekend == FALSE)
+plot(temp$steps, type = "l", xlab = "interval", ylab = "average steps")
+```
