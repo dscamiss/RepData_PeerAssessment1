@@ -20,7 +20,7 @@ activity$date <- as.Date(activity$date)
 
 ## What is mean total number of steps taken per day?
 
-```{r average steps}
+```{r average_steps}
 totalSteps <- ddply(activity, "date", summarize, steps = sum(steps, na.rm = TRUE))
 hist(totalSteps$steps, xlab = "total steps", ylab = "counts", main = "total steps taken per day")
 meanTotalSteps <- mean(totalSteps$steps)
@@ -31,7 +31,7 @@ Mean = $`r meanTotalSteps`$, median = $`r medianTotalSteps`$.
 
 ## What is the average daily activity pattern?
 
-```{r average pattern}
+```{r average_pattern}
 averagePattern <- ddply(activity, "interval", summarize, steps = mean(steps, na.rm = TRUE))
 plot(averagePattern$steps, type = "l", xlab = "interval", ylab = "average steps", main = "average steps taken per interval")
 ```
@@ -64,7 +64,7 @@ Mean = $`r meanTotalSteps`$, median = $`r medianTotalSteps`$.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r average pattern differences}
+```{r average_pattern_differences}
 activity$isWeekend <- factor(weekdays(activity$date) %in% c("Saturday", "Sunday"), levels = c(FALSE, TRUE))
 averagePattern <- ddply(activity, c("interval", "isWeekend"), summarize, steps = mean(steps, na.rm = TRUE))
 temp = subset(averagePattern, isWeekend == TRUE)

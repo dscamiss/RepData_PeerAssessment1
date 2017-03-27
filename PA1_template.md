@@ -21,7 +21,7 @@ totalSteps <- ddply(activity, "date", summarize, steps = sum(steps, na.rm = TRUE
 hist(totalSteps$steps, xlab = "total steps", ylab = "counts", main = "total steps taken per day")
 ```
 
-![](PA1_template_files/figure-html/average steps-1.png)<!-- -->
+![](PA1_template_files/figure-html/average_steps-1.png)<!-- -->
 
 ```r
 meanTotalSteps <- mean(totalSteps$steps)
@@ -38,7 +38,7 @@ averagePattern <- ddply(activity, "interval", summarize, steps = mean(steps, na.
 plot(averagePattern$steps, type = "l", xlab = "interval", ylab = "average steps", main = "average steps taken per interval")
 ```
 
-![](PA1_template_files/figure-html/average pattern-1.png)<!-- -->
+![](PA1_template_files/figure-html/average_pattern-1.png)<!-- -->
 
 Max interval (on average across all days) = 104.
 
@@ -82,11 +82,11 @@ temp = subset(averagePattern, isWeekend == TRUE)
 plot(temp$steps, type = "l", xlab = "interval", ylab = "average steps")
 ```
 
-![](PA1_template_files/figure-html/average pattern differences-1.png)<!-- -->
+![](PA1_template_files/figure-html/average_pattern_differences-1.png)<!-- -->
 
 ```r
 temp = subset(averagePattern, isWeekend == FALSE)
 plot(temp$steps, type = "l", xlab = "interval", ylab = "average steps")
 ```
 
-![](PA1_template_files/figure-html/average pattern differences-2.png)<!-- -->
+![](PA1_template_files/figure-html/average_pattern_differences-2.png)<!-- -->
